@@ -3,7 +3,7 @@
         PUBLIC " - //mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-    <properties resource="db.properties"/>
+    <!--<properties resource="db.properties"/>-->
 
     <typeAliases>
         <typeAlias type="spms.vo.Project" alias="project"/>
@@ -12,12 +12,21 @@
 
     <environments default="development">
         <environment id="development">
+            <!--트랜잭션 관리 방법 설정-->
             <transactionManager type="JDBC"/>
-            <dataSource type="POOLED">
-                <property name="driver" value="${driver}"/>
-                <property name="url" value="${url}"/>
-                <property name="username" value="${username}"/>
-                <property name="password" value="${password}"/>
+
+            <!--POOLED : mybaits 자체 커넥션 풀 사용-->
+            <!--<dataSource type="POOLED">-->
+            <!--<property name="driver" value="${driver}"/>-->
+            <!--<property name="url" value="${url}"/>-->
+            <!--<property name="username" value="${username}"/>-->
+            <!--<property name="password" value="${password}"/>-->
+            <!--</dataSource>-->
+
+            <!--JNDI : WAS 혹은 servlet container에서 제공하는 DataSource 사용-->
+            <!--JNDI를 사용하면 mybatis에서 DBMS연결을 관리하지 않기 때문에 db.propeties파일을 참조할 일이 없다-->
+            <dataSource type="JNDI">
+                <property name="data_source" value="java:comp/env/jdbc/studydb" />
             </dataSource>
         </environment>
     </environments>
