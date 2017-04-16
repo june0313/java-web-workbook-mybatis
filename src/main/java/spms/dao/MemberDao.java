@@ -3,13 +3,14 @@ package spms.dao;
 import spms.vo.Member;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wayne on 2017. 3. 17..
  *
  */
 public interface MemberDao {
-	List<Member> selectList() throws Exception;
+	List<Member> selectList(Map<String, Object> paramMap) throws Exception;
 
 	int insert(Member member) throws Exception;
 

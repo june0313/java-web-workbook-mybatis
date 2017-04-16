@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC " - //mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace 속성은 자바의 패키지 처럼 sql문을 묶는 용도로 사용된다.-->
+<mapper namespace="spms.dao.MemberDao">
+    <resultMap id="memberResultMap" type="member">
+        <id column="MNO" property="no"/>
+        <result column="EMAIL" property="email"/>
+        <result column="PWD" property="password"/>
+        <result column="MNAME" property="name"/>
+        <result column="CRE_DATE" property="createdDate" javaType="java.sql.Date"/>
+        <result column="MOD_DATE" property="modifiedDate" javaType="java.sql.Date"/>
+    </resultMap>
+
+    <select id="selectList" parameterType="map" resultMap="memberResultMap">
+        SELECT MNO, MNAME, EMAIL, CRE_DATE
+        FROM MEMBERS
+        ORDER BY
+        <choose>
+            <when test="orderCond == 'MNAME_ASC'">MNAME asc</when>
+            <when test="orderCond == 'MNAME_DESC'">MNAME desc</when>
+            <when test="orderCond == 'EMAIL_ASC'">EMAIL asc</when>
+            <when test="orderCond == 'EMAIL_DESC'">EMAIL desc</when>
+            <when test="orderCond == 'CREDATE_ASC'">CRE_DATE asc</when>
+            <when test="orderCond == 'CREDATE_DESC'">CRE_DATE desc</when>
+            <when test="orderCond == 'MNO_ASC'">MNO asc</when>
+            <otherwise>MNO desc</otherwise>
+        </choose>
+    </select>
+
+    <select id="selectOne" parameterType="int" resultMap="memberResultMap">
+        SELECT MNO, MNAME, EMAIL, CRE_DATE
+        FROM MEMBERS
+        WHERE MNO = #{no}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO MEMBERS (MNAME, PWD, EMAIL, CRE_DATE, MOD_DATE)
+        VALUES (#{name}, #{password}, #{email}, NOW(), NOW())
+    </insert>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM MEMBERS
+        WHERE MNO = #{no}
+    </delete>
+
+    <update id="update" parameterType="map">
+        UPDATE MEMBERS
+        <set>
+            <if test="name != null">MNAME = #{name},</if>
+            <if test="email != null">EMAIL = #{email}</if>
+        </set>
+        WHERE MNO = #{no}
+    </update>
+
+    <select id="exist" parameterType="map" resultMap="memberResultMap">
+        SELECT MNAME, EMAIL
+        FROM MEMBERS
+        WHERE EMAIL = #{email} AND PWD = #{password}
+    </select>
+</mapper>

@@ -37,5 +37,6 @@
 
     <mappers>
         <mapper resource="MySqlProjectDao.xml"/>
+        <mapper resource="MySqlMemberDao.xml"/>
     </mappers>
 </configuration>

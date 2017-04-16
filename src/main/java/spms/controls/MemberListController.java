@@ -1,6 +1,8 @@
 package spms.controls;
 
+import com.google.common.collect.Maps;
 import spms.annotation.Component;
+import spms.bind.DataBinding;
 import spms.dao.MemberDao;
 
 import java.util.Map;
@@ -10,7 +12,7 @@ import java.util.Map;
  *
  */
 @Component("/member/list.do")
-public class MemberListController implements Controller {
+public class MemberListController implements Controller, DataBinding {
 
 	private MemberDao memberDao;
 
@@ -21,8 +23,16 @@ public class MemberListController implements Controller {
 
 	@Override
 	public String execute(Map<String, Object> model) throws Exception {
-		model.put("members", memberDao.selectList());
+		Map<String, Object> paramMap = Maps.newHashMap();
+		paramMap.put("orderCond", model.get("orderCond"));
+		model.put("members", memberDao.selectList(paramMap));
 		return "/member/MemberList.jsp";
 	}
 
+	@Override
+	public Object[] getDataBinders() {
+		return new Object[] {
+			"orderCond", String.class
+		};
+	}
 }
