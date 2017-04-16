@@ -32,10 +32,22 @@
     </select>
 
     <!--select를 통해 생성된 결과 객체들은 캐싱해두고 다음 select를 실행할 때 재사용 된다-->
-    <select id="selectList" resultMap="projectResultMap">
+    <select id="selectList" parameterType="map" resultMap="projectResultMap">
         SELECT PNO, PNAME, STA_DATE, END_DATE, STATE
         FROM PROJECTS
-        ORDER BY PNO DESC
+        ORDER BY
+        <choose>
+            <when test="orderCond == 'TITLE_ASC'">PNAME asc</when>
+            <when test="orderCond == 'TITLE_DESC'">PNAME desc</when>
+            <when test="orderCond == 'STARTDATE_ASC'">STA_DATE asc</when>
+            <when test="orderCond == 'STARTDATE_DESC'">STA_DATE desc</when>
+            <when test="orderCond == 'ENDDATE_ASC'">END_DATE asc</when>
+            <when test="orderCond == 'ENDDATE_DESC'">END_DATE desc</when>
+            <when test="orderCond == 'STATE_ASC'">STATE asc</when>
+            <when test="orderCond == 'STATE_DESC'">STATE desc</when>
+            <when test="orderCond == 'PNO_ASC'">PNO asc</when>
+            <otherwise>PNO desc</otherwise>
+        </choose>
     </select>
 
     <insert id="insert" parameterType="project">
@@ -49,14 +61,16 @@
         WHERE PNO = #{value}
     </select>
 
-    <update id="update" parameterType="project">
-        UPDATE PROJECTS SET
-        PNAME = #{title},
-        CONTENT = #{content},
-        STA_DATE = #{startDate},
-        END_DATE = #{endDate},
-        STATE = #{state},
-        TAGS = #{tags}
+    <update id="update" parameterType="map">
+        UPDATE PROJECTS
+        <set>
+            <if test="title != null">PNAME=#{title},</if>
+            <if test="content != null">CONTENT=#{content},</if>
+            <if test="startDate != null">STA_DATE=#{startDate},</if>
+            <if test="endDate != null">END_DATE=#{endDate},</if>
+            <if test="state != null">STATE=#{state},</if>
+            <if test="tags != null">TAGS=#{tags}</if>
+        </set>
         WHERE PNO = #{no}
     </update>
 

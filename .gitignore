@@ -3,3 +3,4 @@
 /build/
 /.idea/
 /src/main/webapp/META-INF/context.xml
+/out/
